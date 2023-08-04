@@ -106,11 +106,13 @@ public class RecetteImpl implements RecetteService {
         }
 
         List<QuantiteDto> quantiteDtos = new ArrayList<>();
-        for (int i = 0; i < quantites.size(); i++) {
-            Quantite quantite = quantites.get(i);
-            Ingredient ingredient = ingredients.get(i);
-            quantite.setIngredient(ingredient);
-            quantiteDtos.add(quantiteImpl.creer(convertToQuantiteDto(quantite)));
+        if (quantites.size() == ingredients.size()){
+            for (int i = 0; i < quantites.size(); i++) {
+                Quantite quantite = quantites.get(i);
+                Ingredient ingredient = ingredients.get(i);
+                quantite.setIngredient(ingredient);
+                quantiteDtos.add(quantiteImpl.creer(convertToQuantiteDto(quantite)));
+            }
         }
 
         for (Categorie categorie : categories) {
@@ -169,7 +171,9 @@ public class RecetteImpl implements RecetteService {
         recette.setBesoins(besoins);
         recette.setMedias(medias);
         recette.setRecettes(recettesRef);
+
         Long userId = (Long) session.getAttribute("userId");
+        //Long userId = recetteDto.getUtilisateurCreateur().getId();
         if (userId != null && personneRepo.existsById(userId)){
             Personne personneCre = personneRepo.getReferenceById(userId);
             recette.setUtilisateurCreateur(personneCre);
@@ -277,20 +281,48 @@ public class RecetteImpl implements RecetteService {
             if(recetteDto.getBesoins() != null) {
                 List<Besoin> besoins = new ArrayList<>();
                 for (BesoinDto besoinDTO : recetteDto.getBesoins()){
-                    besoins.add(convertToBesoin(besoinImpl.modifier(besoinDTO.getId(), besoinDTO)));
+                    if (besoinDTO.getId() != null)
+                        besoins.add(convertToBesoin(besoinImpl.modifier(besoinDTO.getId(), besoinDTO)));
+                    else {
+                        besoinDTO = besoinImpl.creer(besoinDTO);
+                        besoins.add(convertToBesoin(besoinDTO));
+                    }
                 }
                 recette.setBesoins(besoins);
             }
             if(recetteDto.getMotCles() != null) {
                 recette.setMotCles(convertToMotCleList(recetteDto.getMotCles()));
             }
-            if(recetteDto.getIngredients() != null) {
-                recette.setIngredients(convertToIngredientList(recetteDto.getIngredients()));
+            if (recette.getIngredients().size() == recette.getQuantites().size()){
+                if(recetteDto.getIngredients() != null) {
+                    recette.setIngredients(convertToIngredientList(recetteDto.getIngredients()));
+                }
+                if(recetteDto.getQuantites() != null) {
+                    List<Quantite> quantites = new ArrayList<>();
+                    int i = 0;
+                    for (QuantiteDto quantiteDto : recetteDto.getQuantites()){
+                        if (quantiteDto.getId() != null) {
+                            quantites.add(convertToQuantite(quantiteImpl.modifier(quantiteDto.getId(), quantiteDto)));
+                            i++;
+                        }
+                        else {
+                            Quantite quantite = convertToQuantite(quantiteDto);
+                            quantite.setIngredient(recette.getIngredients().get(i));
+                            quantites.add(convertToQuantite(quantiteImpl.creer(convertToQuantiteDto(quantite))));
+                        }
+                    }
+                    recette.setQuantites(quantites);
+                }
             }
+
             if(recetteDto.getEtapes() != null) {
                 List<Etape> etapes = new ArrayList<>();
                 for (EtapeDto etapeDTO : recetteDto.getEtapes()){
-                    etapes.add(convertToEtape(etapeImpl.modifier(etapeDTO.getId(), etapeDTO)));
+                    if (etapeDTO.getId() != null)
+                        etapes.add(convertToEtape(etapeImpl.modifier(etapeDTO.getId(), etapeDTO)));
+                    else {
+                        etapes.add(convertToEtape(etapeImpl.creer(etapeDTO)));
+                    }
                 }
                 recette.setEtapes(etapes);
             }
@@ -316,13 +348,6 @@ public class RecetteImpl implements RecetteService {
                     }
                 }
                 recette.setRecettes(recettesRef);
-            }
-            if(recetteDto.getQuantites() != null) {
-                List<Quantite> quantites = new ArrayList<>();
-                for (QuantiteDto quantiteDto : recetteDto.getQuantites()){
-                    quantites.add(convertToQuantite(quantiteImpl.modifier(quantiteDto.getId(), quantiteDto)));
-                }
-                recette.setQuantites(quantites);
             }
             Recette updatedRecette = recetteRepo.save(recette);
             return convertToRecetteDto(updatedRecette);

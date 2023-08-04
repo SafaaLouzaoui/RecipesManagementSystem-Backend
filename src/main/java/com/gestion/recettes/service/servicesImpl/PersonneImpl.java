@@ -22,24 +22,18 @@ import java.util.*;
 
 @Service
 public class PersonneImpl implements PersonneService {
-
-    @Autowired
     private final PersonneRepo personneRepo;
-
-    @Autowired
     private final ProfileRepo profileRepo;
     private final RecetteRepo recetteRepo;
     private final PasswordEncoder passwordEncoder;
-    private final CommentaireImpl commentaireImpl;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public PersonneImpl(PersonneRepo personneRepo, ProfileRepo profileRepo, RecetteRepo recetteRepo, PasswordEncoder passwordEncoder, CommentaireImpl commentaireImpl, JdbcTemplate jdbcTemplate) {
+    public PersonneImpl(PersonneRepo personneRepo, ProfileRepo profileRepo, RecetteRepo recetteRepo, PasswordEncoder passwordEncoder, JdbcTemplate jdbcTemplate) {
         this.personneRepo = personneRepo;
         this.profileRepo = profileRepo;
         this.recetteRepo = recetteRepo;
         this.passwordEncoder = passwordEncoder;
-        this.commentaireImpl = commentaireImpl;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -345,6 +339,7 @@ public class PersonneImpl implements PersonneService {
 
     public static PersonneDto convertToPersonneDTO(Personne personne) {
         PersonneDto personneDTO = new PersonneDto();
+
         personneDTO.setId(personne.getId());
         personneDTO.setNomComplet(personne.getNomComplet());
         personneDTO.setUsername(personne.getUsername());
@@ -352,7 +347,6 @@ public class PersonneImpl implements PersonneService {
         personneDTO.setAdresseMail(personne.getAdresseMail());
         personneDTO.setMotDePasse(personne.getMotDePasse());
         personneDTO.setStatut(personne.getStatut());
-
         if (personne.getProfile() != null) {
             personneDTO.setProfile(ProfileImpl.convertToProfileDto(personne.getProfile()));
         }

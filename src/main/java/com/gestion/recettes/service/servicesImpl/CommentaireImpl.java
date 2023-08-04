@@ -50,6 +50,7 @@ public class CommentaireImpl implements CommentaireService {
             Optional<Personne> existingPersonne = personneRepo.findById(personneId);
             existingPersonne.ifPresent(commentaire::setProprietaire);
         }
+
         if (recetteId != null){
             if (recetteRepo.existsById(recetteId)){
                 Recette recette = recetteRepo.getReferenceById(recetteId);

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,13 +35,6 @@ public class QuantiteImpl implements QuantiteService {
         QuantiteImpl.ingredientRepoStat = ingredientRepoStat;
         this.recetteRepo = recetteRepo;
         QuantiteImpl.recetteRepoStat = recetteRepoStat;
-    }
-
-
-    public QuantiteImpl(QuantiteRepo quantiteRepo, IngredientRepo ingredientRepo, RecetteRepo recetteRepo) {
-        this.quantiteRepo = quantiteRepo;
-        this.ingredientRepo = ingredientRepo;
-        this.recetteRepo = recetteRepo;
     }
 
     @Override
