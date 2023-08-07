@@ -14,7 +14,6 @@ public interface RecetteService {
     RecetteDto modifier(Long id,RecetteDto recetteDto);
     Boolean supprimer(Long id);
     List <RecetteDto> recettesByCategorie(Long id);
-    List<CommentaireDto> commentairesRecette(Long idRecette);
     List<RecetteDto> searchRecettesByNom(String nom);
     List<RecetteDto> mesRecettes(Long id);
     List<RecetteDto> recettesSignalees();

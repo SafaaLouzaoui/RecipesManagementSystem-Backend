@@ -32,12 +32,16 @@ public class Personne {
     private LocalDate dateCreation;
 
     @Basic
-    @Column
+    @Column(columnDefinition = "Text")
     private String image;
 
     @Basic
     @Column(unique=true)
     private String adresseMail;
+
+    @Basic
+    @Column
+    private String addressMailContact;
 
     @Basic
     @Column

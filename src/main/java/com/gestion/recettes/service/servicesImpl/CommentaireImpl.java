@@ -23,23 +23,22 @@ import static com.gestion.recettes.service.servicesImpl.PersonneImpl.convertToPe
 
 @Service
 public class CommentaireImpl implements CommentaireService {
-    @Autowired
-    private CommentaireRepo commentaireRepo;
-    @Autowired
-    private RecetteRepo recetteRepo;
-    @Autowired
-    private PersonneRepo personneRepo;
-    @Autowired
-    private RecetteImpl recetteImpl;
-    @Autowired
-    private PersonneImpl personneImpl;
-    @Autowired
+    private final CommentaireRepo commentaireRepo;
+    
+    private final RecetteRepo recetteRepo;
+    
+    private final PersonneRepo personneRepo;
     private static RecetteRepo recetteRepoStat;
-    @Autowired
+    
     private final JdbcTemplate jdbcTemplate;
 
-    public CommentaireImpl(JdbcTemplate jdbcTemplate) {
+    @Autowired
+    public CommentaireImpl(CommentaireRepo commentaireRepo, RecetteRepo recetteRepo, PersonneRepo personneRepo, JdbcTemplate jdbcTemplate) {
+        this.commentaireRepo = commentaireRepo;
+        this.recetteRepo = recetteRepo;
+        this.personneRepo = personneRepo;
         this.jdbcTemplate = jdbcTemplate;
+        recetteRepoStat = recetteRepo;
     }
 
     @Override
@@ -51,24 +50,23 @@ public class CommentaireImpl implements CommentaireService {
             existingPersonne.ifPresent(commentaire::setProprietaire);
         }
 
-        if (recetteId != null){
-            if (recetteRepo.existsById(recetteId)){
-                Recette recette = recetteRepo.getReferenceById(recetteId);
+        if (recetteId != null) {
+            Optional<Recette> existingRecette = recetteRepo.findById(recetteId);
+            if (existingRecette.isPresent()) {
+                Recette recette = existingRecette.get();
                 commentaire.setRecette(recette);
+                commentaire = commentaireRepo.save(commentaire);
+                recette.getCommentaires().add(commentaire); // Add the Commentaire to the Recette's list of Commentaires
+
+                // Save the updated Recette along with the new Commentaire
+                recetteRepo.save(recette);
+
+                // Convert the saved Recette and its Commentaires to DTOs
+                return convertToCommentaireDTO(commentaire);
             }
         }
 
-        Commentaire savedCommentaire = commentaireRepo.save(commentaire);
-
-        if (recetteId != null) {
-            Optional<Recette> existingRecette = recetteRepo.findById(recetteId);
-            existingRecette.ifPresent(recette -> {
-                recette.getCommentaires().add(savedCommentaire); // Add the Commentaire to the Recette's list of Commentaires
-                recetteRepo.save(recette); // Save the updated Recette
-            });
-        }
-
-        return convertToCommentaireDTO(savedCommentaire);
+        return null; // or handle the case where recetteId is null or Recette not found
     }
 
 
@@ -76,7 +74,6 @@ public class CommentaireImpl implements CommentaireService {
 
     @Override
     public List<CommentaireDto> lireTous() {
-
         List<Commentaire> commentaires = commentaireRepo.findAll();
         return convertToCommentaireDtoList(commentaires);
     }
@@ -100,6 +97,8 @@ public class CommentaireImpl implements CommentaireService {
 
             commentaire.setMessage(commentaireDTO.getMessage());
             commentaire.setNote(commentaireDTO.getNote());
+            if (commentaireDTO.getCreatedAt() != null)
+                commentaire.setCreatedAt(commentaireDTO.getCreatedAt());
             Commentaire updatedCommentaire = commentaireRepo.save(commentaire);
             return convertToCommentaireDTO(updatedCommentaire);
         }else{
@@ -120,6 +119,11 @@ public class CommentaireImpl implements CommentaireService {
     }
 
     @Override
+    public List<CommentaireDto> commentairesRecette(Long idRecette) {
+        return convertToCommentaireDtoList(commentaireRepo.findByRecetteId(idRecette));
+    }
+
+    @Override
     public CommentaireDto contactCommentaire(CommentairePersonneContactDto commentairePersonneContactDto) {
         Commentaire commentaire =  new Commentaire();
         Personne personne = new Personne();
@@ -133,7 +137,7 @@ public class CommentaireImpl implements CommentaireService {
 
         commentaire.setMessage(messageObject);
         personne.setUsername(commentairePersonneContactDto.getUsername());
-        personne.setAdresseMail(commentairePersonneContactDto.getEmail());
+        personne.setAddressMailContact(commentairePersonneContactDto.getEmail());
         personne.setStatut("visitor");
         personneRepo.save(personne);
         PersonneDto personneDto = convertToPersonneDTO(personne);
@@ -154,7 +158,9 @@ public class CommentaireImpl implements CommentaireService {
                 CommentairePersonneContactDto commentairePersonneContactDto = new CommentairePersonneContactDto();
                 commentairePersonneContactDto.setId(commentaireDto.getId());
                 commentairePersonneContactDto.setUsername(commentaireDto.getProprietaire().getUsername());
-                commentairePersonneContactDto.setEmail(commentaireDto.getProprietaire().getAdresseMail());
+                commentairePersonneContactDto.setEmail(commentaireDto.getProprietaire().getAddressMailContact());
+                if (commentaireDto.getCreatedAt() != null)
+                    commentairePersonneContactDto.setCreatedAt(commentaireDto.getCreatedAt());
                 String message = commentaireDto.getMessage();
                 if (message.contains("<::>")) {
                     String[] parties = message.split("<::>", 2);
@@ -177,6 +183,7 @@ public class CommentaireImpl implements CommentaireService {
         commentaireDTO.setId(commentaire.getId());
         commentaireDTO.setMessage(commentaire.getMessage());
         commentaireDTO.setNote(commentaire.getNote());
+        commentaireDTO.setCreatedAt(commentaire.getCreatedAt());
         if(commentaire.getCreateurRecette() != null) {
             commentaireDTO.setCreateurRecette(convertToPersonneDTO(commentaire.getCreateurRecette()));
         } if (commentaire.getApprobateurRecette() != null) {
@@ -194,6 +201,7 @@ public class CommentaireImpl implements CommentaireService {
         commentaire.setId(commentaireDTO.getId());
         commentaire.setMessage(commentaireDTO.getMessage());
         commentaire.setNote(commentaireDTO.getNote());
+        commentaire.setCreatedAt(commentaireDTO.getCreatedAt());
         if(commentaireDTO.getCreateurRecette() != null) {
             commentaire.setCreateurRecette(convertToPersonne(commentaireDTO.getCreateurRecette()));
         } if (commentaireDTO.getApprobateurRecette() != null) {

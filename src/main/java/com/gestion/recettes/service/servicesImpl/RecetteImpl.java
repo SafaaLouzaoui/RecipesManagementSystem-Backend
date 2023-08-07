@@ -27,7 +27,6 @@ import static com.gestion.recettes.service.servicesImpl.MediaImpl.*;
 import static com.gestion.recettes.service.servicesImpl.MotCleImpl.convertToMotCleDto;
 import static com.gestion.recettes.service.servicesImpl.MotCleImpl.convertToMotCleList;
 import static com.gestion.recettes.service.servicesImpl.PersonneImpl.convertToPersonne;
-import static com.gestion.recettes.service.servicesImpl.PersonneImpl.convertToPersonneDTO;
 import static com.gestion.recettes.service.servicesImpl.QuantiteImpl.*;
 
 @Service
@@ -35,7 +34,6 @@ public class RecetteImpl implements RecetteService {
 
     private static RecetteRepo recetteRepoStat;
     private final RecetteRepo recetteRepo;
-    private final IngredientRepo ingredientRepo;
     private final IngredientImpl ingredientImpl;
     private final QuantiteImpl quantiteImpl;
     private final CategorieImpl categorieImpl;
@@ -43,17 +41,17 @@ public class RecetteImpl implements RecetteService {
     private final MotCleImpl motCleImpl;
     private final BesoinImpl besoinImpl;
     private final MediaImpl mediaImpl;
+    private final CommentaireImpl commentaireImpl;
     private final PersonneRepo personneRepo;
     private final JdbcTemplate jdbcTemplate;
     private final CategorieRepo categorieRepo;
 
     @Autowired
-    public RecetteImpl(RecetteRepo recetteRepo, IngredientRepo ingredientRepo, IngredientImpl ingredientImpl,
+    public RecetteImpl(RecetteRepo recetteRepo, IngredientImpl ingredientImpl,
                        QuantiteImpl quantiteImpl, CategorieImpl categorieImpl, EtapeImpl etapeImpl,
                        MotCleImpl motCleImpl, BesoinImpl besoinImpl, MediaImpl mediaImpl,
-                       PersonneRepo personneRepo, JdbcTemplate jdbcTemplate, CategorieRepo categorieRepo) {
+                       CommentaireImpl commentaireImpl, PersonneRepo personneRepo, JdbcTemplate jdbcTemplate, CategorieRepo categorieRepo) {
         this.recetteRepo = recetteRepo;
-        this.ingredientRepo = ingredientRepo;
         this.ingredientImpl = ingredientImpl;
         this.quantiteImpl = quantiteImpl;
         this.categorieImpl = categorieImpl;
@@ -61,22 +59,13 @@ public class RecetteImpl implements RecetteService {
         this.motCleImpl = motCleImpl;
         this.besoinImpl = besoinImpl;
         this.mediaImpl = mediaImpl;
+        this.commentaireImpl = commentaireImpl;
         this.personneRepo = personneRepo;
         this.jdbcTemplate = jdbcTemplate;
-        RecetteImpl.recetteRepoStat = recetteRepo;
+        recetteRepoStat = recetteRepo;
         this.categorieRepo = categorieRepo;
     }
 
-    //    @Override
-//    public RecetteDto creer(RecetteDto recetteDto) {
-//        Recette recette = convertToRecette(recetteDto);
-//        recette.setIngredients(convertToIngredientList(recetteDto.getIngredients()));
-////        recette.setCategories(convertToCategorieList(recetteDto.getCategories()));
-////        recette.setEtapes(convertToEtapeList(recetteDto.getEtapes()));
-////        recette.setBesoins();
-//        recetteRepo.save(recette);
-//        return convertToRecetteDto(recette);
-//    }
     @Override
     public RecetteDto creer(RecetteDto recetteDto, HttpSession session) {
         Recette recette = convertToRecette(recetteDto);
@@ -204,9 +193,8 @@ public class RecetteImpl implements RecetteService {
         Optional<Recette> optionalRecette = recetteRepo.findById(id);
         if (optionalRecette.isPresent()) {
             Recette recette = optionalRecette.get();
-            RecetteDto recetteDto = convertToRecetteDto(recette);
-            recetteDto.setCommentaires(commentairesRecette(id));
-           return recetteDto;
+            //recette.setCommentaires(CommentaireImpl.convertToCommentaireList(commentaireImpl.commentairesRecette(id)));
+            return convertToRecetteDto(recette);
         } else {
             System.out.println("Cette recette n'existe pas");
             return null;
@@ -215,13 +203,13 @@ public class RecetteImpl implements RecetteService {
 
     @Override
     public List<RecetteDto> lireTous() {
-        List<Recette> getRecipes = recetteRepo.findAll();
-        List<RecetteDto> recetteDtoList = new ArrayList<>();
-        for (RecetteDto recetteDto : convertToRecetteDtoList(getRecipes)){
-            recetteDto.setCommentaires(commentairesRecette(recetteDto.getId()));
-            recetteDtoList.add(recetteDto);
+        List<Recette> recetteList = recetteRepo.findAll();
+        List<RecetteDto> recetteDtos = new ArrayList<>();
+        for (Recette recette : recetteList) {
+            //recette.setCommentaires(CommentaireImpl.convertToCommentaireList(commentaireImpl.commentairesRecette(recette.getId())));
+            recetteDtos.add(convertToRecetteDto(recette));
         }
-        return recetteDtoList;
+        return recetteDtos;
     }
 
     @Override
@@ -433,33 +421,6 @@ public class RecetteImpl implements RecetteService {
 
 
 
-    @Override
-    public List<CommentaireDto> commentairesRecette(Long idRecette) {
-        String sql = "SELECT * FROM commentaire WHERE recette_id = ?";
-
-        return jdbcTemplate.query(sql, new Object[]{idRecette}, (rs, rowNum) -> {
-            // Extract data from the result set and create CommentaireDTO objects
-            CommentaireDto commentaireDTO = new CommentaireDto();
-            commentaireDTO.setId(rs.getLong("id"));
-            commentaireDTO.setMessage(rs.getString("message"));
-            commentaireDTO.setNote(rs.getBigDecimal("note"));
-            Long idProprietaire = rs.getLong("proprietaire_id");
-
-            Optional<Personne> optionalProprietaire = personneRepo.findById(idProprietaire);
-            if (optionalProprietaire.isPresent()) {
-                PersonneDto proprietaireDTO = convertToPersonneDTO(optionalProprietaire.get());
-                commentaireDTO.setProprietaire(proprietaireDTO);
-            } else {
-                System.out.println("Le propriétaire du commentaire n'existe pas");
-                commentaireDTO.setProprietaire(null); // Set it to null or handle it accordingly
-            }
-
-            return commentaireDTO;
-        });
-    }
-
-
-
 
     public static RecetteDto convertToRecetteDto(Recette recette) {
         RecetteDto recetteDto = new RecetteDto();
@@ -511,6 +472,9 @@ public class RecetteImpl implements RecetteService {
         /*if(recette.getRecettes() != null) {
             recetteDto.setRecettes(convertToRecetteDtoList(recette.getRecettes()));
         }*/
+        if (recette.getCommentaires() != null) {
+            recetteDto.setCommentaires(CommentaireImpl.convertToCommentaireDtoList(recette.getCommentaires()));
+        }
         if (recette.getRecettes() != null) {
             List<RecetteRefDto> recetteRefDtos = new ArrayList<>();
             for (Recette recette1 : recette.getRecettes()) {
@@ -586,6 +550,9 @@ public class RecetteImpl implements RecetteService {
         /*if(recetteDto.getRecettes() != null) {
             recette.setRecettes(convertToRecetteList(recetteDto.getRecettes()));
         }*/
+        if (recetteDto.getCommentaires() != null) {
+            recette.setCommentaires(CommentaireImpl.convertToCommentaireList(recetteDto.getCommentaires()));
+        }
         if (recetteDto.getRecettesRef() != null){
             List<Recette> recettesRef = new ArrayList<>();
             for (RecetteRefDto recetteRefDto : recetteDto.getRecettesRef()){

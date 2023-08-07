@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,11 +21,14 @@ public class Commentaire {
     @Column(precision = 5, scale = 4)
     private BigDecimal note;
 
+    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
+
 
     @ManyToOne    //utilisateur
     private Personne createurRecette;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Recette recette;
 
     @ManyToOne

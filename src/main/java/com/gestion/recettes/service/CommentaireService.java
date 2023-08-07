@@ -12,6 +12,7 @@ public interface CommentaireService {
 
     CommentaireDto modifier(Long id, CommentaireDto commentaireDTO);
     Boolean supprimer(Long id);
+    List<CommentaireDto> commentairesRecette(Long idRecette);
     CommentaireDto contactCommentaire(CommentairePersonneContactDto commentairePersonneContactDto);
     CommentairePersonneContactDto contactes();
 }

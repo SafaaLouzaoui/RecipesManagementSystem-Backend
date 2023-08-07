@@ -18,6 +18,7 @@ public class PersonneDto {
     private String username;
     private LocalDate dateCreation;
     private String adresseMail;
+    private String addressMailContact;
     private String motDePasse;
     private String statut;
     private ProfileDto profile;
