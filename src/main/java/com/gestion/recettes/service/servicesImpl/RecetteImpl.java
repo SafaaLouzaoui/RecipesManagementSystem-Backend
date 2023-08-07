@@ -180,7 +180,11 @@ public class RecetteImpl implements RecetteService {
         }
         for (MediaDto mediaDTO : mediaDtos) {
             mediaDTO.setRecetteId(recette.getId());
-            mediaImpl.modifier(mediaDTO.getId(), mediaDTO);
+            if (mediaDTO.getId() != null)
+                mediaImpl.modifier(mediaDTO.getId(), mediaDTO);
+            else {
+                mediaImpl.creer(mediaDTO);
+            }
         }
 
         return convertToRecetteDto(recette);
