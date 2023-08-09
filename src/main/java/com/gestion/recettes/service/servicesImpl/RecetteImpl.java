@@ -265,8 +265,15 @@ public class RecetteImpl implements RecetteService {
             }
             if(recetteDto.getMedias() != null) {
                 List<Media> medias = new ArrayList<>();
+                for (Media media : recette.getMedias()){
+                    mediaImpl.supprimer(media.getId());
+                }
                 for (MediaDto mediaDTO : recetteDto.getMedias()){
-                    medias.add(convertToMedia(mediaImpl.modifier(mediaDTO.getId(), mediaDTO)));
+                    mediaDTO.setRecetteId(id);
+                    if (mediaDTO.getId() != null)
+                        mediaDTO.setId(null);
+                    MediaDto mediaDto = mediaImpl.creer(mediaDTO);
+                    medias.add(convertToMedia(mediaDto));
                 }
                 recette.setMedias(medias);
             }
