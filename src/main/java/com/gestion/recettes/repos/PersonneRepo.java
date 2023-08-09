@@ -11,7 +11,8 @@ import java.util.Optional;
 @Repository
 public interface PersonneRepo extends JpaRepository<Personne, Long> {
 
-    Personne findByAdresseMail(String adresseMail);
+    //Personne findByAdresseMail(String adresseMail);
+    Personne findByAdresseMailAndStatutNot(String adresseMail, String statut);
     Optional<Personne> findByAdresseMailAndMotDePasse(String adresseMail, String motDePasse);
 }
 

@@ -84,7 +84,7 @@ public class PersonneImpl implements PersonneService {
 
     @Override
     public LoginResponse loginPersonne(LoginDto loginDto, HttpSession session) {
-        Personne personne1 = personneRepo.findByAdresseMail(loginDto.getAdresseMail());
+        Personne personne1 = personneRepo.findByAdresseMailAndStatutNot(loginDto.getAdresseMail(), "visitor");
         if (personne1 != null) {
             String password = loginDto.getMotDePasse();
             String encodedPassword = personne1.getMotDePasse();
