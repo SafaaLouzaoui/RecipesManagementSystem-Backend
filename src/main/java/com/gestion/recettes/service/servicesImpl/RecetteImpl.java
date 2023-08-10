@@ -19,13 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gestion.recettes.service.servicesImpl.BesoinImpl.*;
-import static com.gestion.recettes.service.servicesImpl.CategorieImpl.convertToCategorieDTO;
-import static com.gestion.recettes.service.servicesImpl.CategorieImpl.convertToCategorieList;
+import static com.gestion.recettes.service.servicesImpl.CategorieImpl.*;
 import static com.gestion.recettes.service.servicesImpl.EtapeImpl.*;
 import static com.gestion.recettes.service.servicesImpl.IngredientImpl.*;
 import static com.gestion.recettes.service.servicesImpl.MediaImpl.*;
-import static com.gestion.recettes.service.servicesImpl.MotCleImpl.convertToMotCleDto;
-import static com.gestion.recettes.service.servicesImpl.MotCleImpl.convertToMotCleList;
+import static com.gestion.recettes.service.servicesImpl.MotCleImpl.*;
 import static com.gestion.recettes.service.servicesImpl.PersonneImpl.convertToPersonne;
 import static com.gestion.recettes.service.servicesImpl.QuantiteImpl.*;
 
@@ -87,78 +85,78 @@ public class RecetteImpl implements RecetteService {
             }
         }
 
+        //***ingredientList is the list that will added to the created recette
+        List<Ingredient> ingredientList = new ArrayList<>();
         for (Ingredient ingredient : ingredients) {
             if (ingredient.getId() == null) {
                 IngredientDto createdIngredient = ingredientImpl.creer(convertToIngredientDTO(ingredient));
-                ingredient.setId(createdIngredient.getId());
+                ingredient = convertToIngredient(createdIngredient);
             }
+            ingredientList.add(ingredient);
         }
 
-        List<QuantiteDto> quantiteDtos = new ArrayList<>();
+        //same change here as ***
+        List<Quantite> quantiteList = new ArrayList<>();
         if (quantites.size() == ingredients.size()){
             for (int i = 0; i < quantites.size(); i++) {
                 Quantite quantite = quantites.get(i);
                 Ingredient ingredient = ingredients.get(i);
                 quantite.setIngredient(ingredient);
-                quantiteDtos.add(quantiteImpl.creer(convertToQuantiteDto(quantite)));
+                QuantiteDto quantiteDto = quantiteImpl.creer(convertToQuantiteDto(quantite));
+                quantiteList.add(convertToQuantite(quantiteDto));
             }
         }
 
+        List<Categorie> categorieList = new ArrayList<>();
         for (Categorie categorie : categories) {
             if (categorie.getIdCat() == null){
                 CategorieDto categorieDTO = categorieImpl.creer(convertToCategorieDTO(categorie));
-                categorie.setIdCat(categorieDTO.getIdCat());
+                categorie = convertToCategorie(categorieDTO);
             }
-        }
-        for (Categorie categorie : categories) {
-            if (categorie.getIdCat() != null) {
-                // Fetch the existing category from the database using its ID
-                Categorie existingCategorie = categorieRepo.findById(categorie.getIdCat()).orElse(null);
-                if (existingCategorie != null) {
-                    // Assign the existing category to the recette
-                    categorie.setIdCat(existingCategorie.getIdCat());
-                    // You may also need to update other properties of the category if necessary
-                    // categorie.setName(existingCategorie.getName());
-                    // categorie.setDescription(existingCategorie.getDescription());
-                }
-            }
+            categorieList.add(categorie);
         }
 
-        List<EtapeDto> etapeDtos = new ArrayList<>();
+        //same here as ***
+        List<Etape> etapeList = new ArrayList<>();
         for (Etape etape : etapes) {
-            if (etape.getId() == null){
-                etapeDtos.add(etapeImpl.creer(convertToEtapeDTO(etape)));
-            }
+            EtapeDto etapeDto = etapeImpl.creer(convertToEtapeDTO(etape));
+            etapeList.add(convertToEtape(etapeDto));
         }
 
+        //Probleme d'ajout le nouveau mot cle verifier pour les autres sont de meme
+        List<MotCle> motCleList = new ArrayList<>();
         for (MotCle motCle : motCles) {
             if (motCle.getId() == null){
                 MotCleDto motCleDto = motCleImpl.creer(convertToMotCleDto(motCle));
-                motCle.setId(motCleDto.getId());
+                motCle = convertToMotCle(motCleDto);
             }
+            motCleList.add(motCle);
         }
 
+        //same here as ***
+        List<Besoin> besoinList = new ArrayList<>();
         for (Besoin besoin : besoins) {
             if (besoin.getId() == null){
                 BesoinDto besoinDTO = besoinImpl.creer(convertToBesoinDTO(besoin));
-                besoin.setId(besoinDTO.getId());
+                besoin = convertToBesoin(besoinDTO);
             }
+            besoinList.add(besoin);
         }
 
-        List<MediaDto> mediaDtos = new ArrayList<>();
-        for (Media media1 : medias) {
-            MediaDto mediaDTO = mediaImpl.creer(convertToMediaDTO(media1));
-            mediaDtos.add(mediaDTO);
+        List<Media> mediaList = new ArrayList<>();
+        for (Media media : medias) {
+            MediaDto mediaDTO = mediaImpl.creer(convertToMediaDTO(media));
+            mediaList.add(convertToMedia(mediaDTO));
         }
 
         recette.setVisibilitee("public");
-        recette.setQuantites(quantites);
-        recette.setIngredients(ingredients);
+        recette.setQuantites(quantiteList);
+        recette.setIngredients(ingredientList);
         recette.setCategories(categories);
-        recette.setEtapes(etapes);
-        recette.setMotCles(motCles);
-        recette.setBesoins(besoins);
-        recette.setMedias(medias);
+        recette.setEtapes(etapeList);
+        recette.setMotCles(motCleList);
+        recette.setBesoins(besoinList);
+        recette.setMedias(mediaList);
         recette.setRecettes(recettesRef);
 
         Long userId = (Long) session.getAttribute("userId");
@@ -170,15 +168,15 @@ public class RecetteImpl implements RecetteService {
 
         recette = recetteRepo.save(recette);
 
-        for (QuantiteDto quantiteDto : quantiteDtos){
+        for (QuantiteDto quantiteDto : convertToQuantiteDtoList(quantiteList)){
             quantiteDto.setRecetteId(recette.getId());
             quantiteImpl.modifier(quantiteDto.getId(), quantiteDto);
         }
-        for (EtapeDto etapeDTO : etapeDtos){
+        for (EtapeDto etapeDTO : convertToEtapeDtoList(etapeList)){
             etapeDTO.setRecetteId(recette.getId());
             etapeImpl.modifier(etapeDTO.getId(), etapeDTO);
         }
-        for (MediaDto mediaDTO : mediaDtos) {
+        for (MediaDto mediaDTO : convertToMediaDTOList(mediaList)) {
             mediaDTO.setRecetteId(recette.getId());
             if (mediaDTO.getId() != null)
                 mediaImpl.modifier(mediaDTO.getId(), mediaDTO);
