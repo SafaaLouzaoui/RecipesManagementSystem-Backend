@@ -1,6 +1,7 @@
 package com.gestion.recettes.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,8 +18,10 @@ public class SecurityConfig {
 	@RequiredArgsConstructor
 	public class SecurityConfiguration {
 
-	  private final JwtAuthentificationFilter jwtAuthFilter;
-	  private final AuthenticationProvider authenticationProvider;
+		@Autowired
+		private final JwtAuthentificationFilter jwtAuthFilter;
+		@Autowired
+		private final AuthenticationProvider authenticationProvider;
 
 	  @Bean
 	  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
