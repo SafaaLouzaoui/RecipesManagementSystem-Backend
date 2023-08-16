@@ -2,17 +2,24 @@ package com.gestion.recettes.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Entity
-public class Personne {
+public class Personne implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +30,8 @@ public class Personne {
     private String nomComplet;
 
     @Basic
-    @Column
-    private String username;
+    @Column(unique=true)
+    private String user_name;
 
 
     @Basic
@@ -51,8 +58,8 @@ public class Personne {
     @Column
     private String statut;
 
-    @ManyToOne
-    private Profile profile;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "proprietaire", fetch = FetchType.EAGER)
     private List<Commentaire> mesCommentaires;
@@ -75,5 +82,47 @@ public class Personne {
 
     @OneToMany(mappedBy = "ApprobateurRecette", fetch = FetchType.EAGER)
     private List<Commentaire> remarques;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return List.of(new SimpleGrantedAuthority(role.name()));
+	}
+
+	@Override
+	public String getPassword() {
+		// TODO Auto-generated method stub
+		return motDePasse;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return adresseMail;
+	}
 
 }

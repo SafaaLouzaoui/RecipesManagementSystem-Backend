@@ -1,13 +1,16 @@
 package com.gestion.recettes.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
+
+import com.gestion.recettes.entities.Role;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -21,7 +24,7 @@ public class PersonneDto {
     private String addressMailContact;
     private String motDePasse;
     private String statut;
-    private ProfileDto profile;
+    private Role role;
     private String image;
 
 }
