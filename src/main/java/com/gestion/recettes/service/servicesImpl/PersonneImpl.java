@@ -33,18 +33,18 @@ public class PersonneImpl implements PersonneService {
     private final RecetteRepo recetteRepo;
     private final PasswordEncoder passwordEncoder;
     private JdbcTemplate jdbcTemplate;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private JwtService jwtService;
+    private AuthenticationManager authenticationManager;
 
 
     @Autowired
-    public PersonneImpl(PersonneRepo personneRepo	, RecetteRepo recetteRepo, PasswordEncoder passwordEncoder, JdbcTemplate jdbcTemplate,JwtService jwtService,AuthenticationManager authenticationManager) {
+    public PersonneImpl(PersonneRepo personneRepo, RecetteRepo recetteRepo, PasswordEncoder passwordEncoder, JdbcTemplate jdbcTemplate) {
         this.personneRepo = personneRepo;
         this.recetteRepo = recetteRepo;
         this.passwordEncoder = passwordEncoder;
         this.jdbcTemplate = jdbcTemplate;
-        this.jwtService=jwtService;
-        this.authenticationManager=authenticationManager;
+        //this.jwtService=jwtService;
+        //this.authenticationManager=authenticationManager;
     }
     
     public AuthenticationResponse inscrire(RegisterRequest request) {
