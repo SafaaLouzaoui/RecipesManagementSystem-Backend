@@ -14,7 +14,7 @@ public interface PersonneRepo extends JpaRepository<Personne, Long> {
     //Personne findByAdresseMail(String adresseMail);
     Personne findByAdresseMailAndStatutNot(String adresseMail, String statut);
     Optional<Personne> findByAdresseMailAndMotDePasse(String adresseMail, String motDePasse);
-    Optional<Personne> findByEmail(String adresseMail);
+    Optional<Personne> findByAdresseMail(String adresseMail);
 
 }
 

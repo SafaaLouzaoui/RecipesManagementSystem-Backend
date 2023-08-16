@@ -21,8 +21,4 @@ public class Profile {
     private String description;
 
 
-    @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER)
-    private List<Personne> personnes = new ArrayList<>();
-
-
 }

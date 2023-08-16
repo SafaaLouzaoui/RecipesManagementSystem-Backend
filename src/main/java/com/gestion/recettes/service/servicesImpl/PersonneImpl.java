@@ -117,7 +117,7 @@ public class PersonneImpl implements PersonneService {
             		request.getPassword()
             )
         );
-        var user = personneRepo.findByEmail(request.getEmail())
+        var user = personneRepo.findByAdresseMail(request.getEmail())
             .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
