@@ -136,7 +136,7 @@ public class CommentaireImpl implements CommentaireService {
             messageObject = commentairePersonneContactDto.getMessage();
 
         commentaire.setMessage(messageObject);
-        personne.setUsername(commentairePersonneContactDto.getUsername());
+        personne.setUser_name(commentairePersonneContactDto.getUsername());
         personne.setAddressMailContact(commentairePersonneContactDto.getEmail());
         personne.setStatut("visitor");
         personneRepo.save(personne);

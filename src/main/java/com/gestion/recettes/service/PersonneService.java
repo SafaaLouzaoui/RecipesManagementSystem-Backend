@@ -1,5 +1,8 @@
 package com.gestion.recettes.service;
 
+import com.gestion.recettes.config.AuthenticationRequest;
+import com.gestion.recettes.config.AuthenticationResponse;
+import com.gestion.recettes.config.RegisterRequest;
 import com.gestion.recettes.dto.*;
 import com.gestion.recettes.response.LoginResponse;
 import jakarta.servlet.http.HttpSession;
@@ -9,10 +12,10 @@ import java.util.List;
 
 public interface PersonneService {
 
-    PersonneDto inscrire(PersonneDto personneDTO);
+    AuthenticationResponse inscrire(RegisterRequest request);
 
     PersonneDto lire(Long id);
-    LoginResponse loginPersonne(LoginDto loginDTO, HttpSession session);
+    AuthenticationResponse loginPersonne(AuthenticationRequest request);
 
     List<PersonneDto> lireTous();
 
@@ -26,6 +29,5 @@ public interface PersonneService {
     void approuverRecette(Long idPersonne, Long idRecette);
     void refuserRecette(Long idPersonne, Long idRecette);
     void logoutPersonne(Long id, HttpSession session);
-    boolean promouvoirUtilisateurVersModerateur(Long utilisateurId);
     List<PersonneDto> mesFollowers(Long id);
 }

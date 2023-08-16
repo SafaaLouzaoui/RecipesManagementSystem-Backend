@@ -1,5 +1,8 @@
 package com.gestion.recettes.controllers;
 
+import com.gestion.recettes.config.AuthenticationRequest;
+import com.gestion.recettes.config.AuthenticationResponse;
+import com.gestion.recettes.config.RegisterRequest;
 import com.gestion.recettes.dto.LoginDto;
 import com.gestion.recettes.dto.PersonneDto;
 import com.gestion.recettes.response.LoginResponse;
@@ -23,20 +26,34 @@ public class PersonneController {
     private PersonneService personneService;
 
     @PostMapping(path = "/inscrire")
-    public ResponseEntity<PersonneDto> inscrirePersonne(@RequestBody PersonneDto personneDTO) {
-        PersonneDto personneInscrite = personneService.inscrire(personneDTO);
-        return new ResponseEntity<>(personneInscrite, HttpStatus.CREATED);
-    }
-
+    public ResponseEntity<AuthenticationResponse> register(
+    	      @RequestBody RegisterRequest request
+    	  ) {
+    	    return ResponseEntity.ok(personneService.inscrire(request));
+    	  }
+    
+//    @PostMapping(path = "/inscrire")
+//    public ResponseEntity<PersonneDto> inscrirePersonne(@RequestBody PersonneDto personneDTO) {
+//        PersonneDto personneInscrite = personneService.inscrire(personneDTO);
+//        return new ResponseEntity<>(personneInscrite, HttpStatus.CREATED);
+//    }
+    
     @PostMapping(path = "/connexion")
-    public ResponseEntity<LoginResponse> loginPersonne(@RequestBody LoginDto loginDto, HttpSession session) {
-        LoginResponse loginResponse = personneService.loginPersonne(loginDto, session);
-        if (loginResponse.getId() != null) {
-            return ResponseEntity.ok().body(loginResponse);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
-        }
-    }
+    public ResponseEntity<AuthenticationResponse> loginPersonne(
+  	      @RequestBody AuthenticationRequest request
+  	  ) {
+  	    return ResponseEntity.ok(personneService.loginPersonne(request));
+  	  }
+
+//    @PostMapping(path = "/connexion")
+//    public ResponseEntity<LoginResponse> loginPersonne(@RequestBody LoginDto loginDto, HttpSession session) {
+//        LoginResponse loginResponse = personneService.loginPersonne(loginDto, session);
+//        if (loginResponse.getId() != null) {
+//            return ResponseEntity.ok().body(loginResponse);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
+//        }
+//    }
 
     @GetMapping(path="/lire/{id}")
     public ResponseEntity<PersonneDto> lire(@PathVariable("id") Long id){
@@ -115,16 +132,16 @@ public class PersonneController {
         personneService.logoutPersonne(id, session);
         return ResponseEntity.ok("Déconnexion réussie.");
     }
-    @PostMapping("/promote/{utilisateurId}")
-    public ResponseEntity<String> promouvoirUtilisateurVersModerateur(@PathVariable Long utilisateurId) {
-        boolean success = personneService.promouvoirUtilisateurVersModerateur(utilisateurId);
-
-        if (success) {
-            return ResponseEntity.ok("L'utilisateur a été promu en modérateur avec succès.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé.");
-        }
-    }
+//    @PostMapping("/promote/{utilisateurId}")
+//    public ResponseEntity<String> promouvoirUtilisateurVersModerateur(@PathVariable Long utilisateurId) {
+//        boolean success = personneService.promouvoirUtilisateurVersModerateur(utilisateurId);
+//
+//        if (success) {
+//            return ResponseEntity.ok("L'utilisateur a été promu en modérateur avec succès.");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé.");
+//        }
+//    }
 
     @GetMapping(path = "mesFollowers/{utilisateurId}")
     public List<PersonneDto> mesFollowers(@PathVariable Long id){
