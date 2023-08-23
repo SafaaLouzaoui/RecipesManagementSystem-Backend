@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gestion.recettes</groupId>
-	<artifactId>security</artifactId>
+	<artifactId>com.gestion.recettes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Cooking Recipes Management System</name>
 	<description>Demo project for Spring Boot</description>
