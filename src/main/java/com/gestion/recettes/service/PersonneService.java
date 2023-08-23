@@ -1,10 +1,6 @@
 package com.gestion.recettes.service;
 
-import com.gestion.recettes.config.AuthenticationRequest;
-import com.gestion.recettes.config.AuthenticationResponse;
-import com.gestion.recettes.config.RegisterRequest;
 import com.gestion.recettes.dto.*;
-import com.gestion.recettes.response.LoginResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
@@ -12,10 +8,10 @@ import java.util.List;
 
 public interface PersonneService {
 
-    AuthenticationResponse inscrire(RegisterRequest request);
+    //AuthenticationResponse inscrire(RegisterRequest request);
 
     PersonneDto lire(Long id);
-    AuthenticationResponse loginPersonne(AuthenticationRequest request);
+    //AuthenticationResponse loginPersonne(AuthenticationRequest request);
 
     List<PersonneDto> lireTous();
 

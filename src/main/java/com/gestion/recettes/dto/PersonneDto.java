@@ -18,7 +18,7 @@ public class PersonneDto {
 
     private Long id;
     private String nomComplet;
-    private String username;
+    private String user_name;
     private LocalDate dateCreation;
     private String adresseMail;
     private String addressMailContact;

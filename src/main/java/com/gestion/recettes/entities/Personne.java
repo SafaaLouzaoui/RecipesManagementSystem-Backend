@@ -1,5 +1,6 @@
 package com.gestion.recettes.entities;
 
+import com.gestion.recettes.token.Token;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -60,6 +61,8 @@ public class Personne implements UserDetails{
 
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToMany(mappedBy = "personne")
+    private List<Token> tokens;
 
     @OneToMany(mappedBy = "proprietaire", fetch = FetchType.EAGER)
     private List<Commentaire> mesCommentaires;

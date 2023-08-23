@@ -1,11 +1,6 @@
 package com.gestion.recettes.controllers;
 
-import com.gestion.recettes.config.AuthenticationRequest;
-import com.gestion.recettes.config.AuthenticationResponse;
-import com.gestion.recettes.config.RegisterRequest;
-import com.gestion.recettes.dto.LoginDto;
 import com.gestion.recettes.dto.PersonneDto;
-import com.gestion.recettes.response.LoginResponse;
 import com.gestion.recettes.service.PersonneService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -24,36 +19,6 @@ public class PersonneController {
 
     @Autowired
     private PersonneService personneService;
-
-    @PostMapping(path = "/inscrire")
-    public ResponseEntity<AuthenticationResponse> register(
-    	      @RequestBody RegisterRequest request
-    	  ) {
-    	    return ResponseEntity.ok(personneService.inscrire(request));
-    	  }
-    
-//    @PostMapping(path = "/inscrire")
-//    public ResponseEntity<PersonneDto> inscrirePersonne(@RequestBody PersonneDto personneDTO) {
-//        PersonneDto personneInscrite = personneService.inscrire(personneDTO);
-//        return new ResponseEntity<>(personneInscrite, HttpStatus.CREATED);
-//    }
-    
-    @PostMapping(path = "/connexion")
-    public ResponseEntity<AuthenticationResponse> loginPersonne(
-  	      @RequestBody AuthenticationRequest request
-  	  ) {
-  	    return ResponseEntity.ok(personneService.loginPersonne(request));
-  	  }
-
-//    @PostMapping(path = "/connexion")
-//    public ResponseEntity<LoginResponse> loginPersonne(@RequestBody LoginDto loginDto, HttpSession session) {
-//        LoginResponse loginResponse = personneService.loginPersonne(loginDto, session);
-//        if (loginResponse.getId() != null) {
-//            return ResponseEntity.ok().body(loginResponse);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
-//        }
-//    }
 
     @GetMapping(path="/lire/{id}")
     public ResponseEntity<PersonneDto> lire(@PathVariable("id") Long id){

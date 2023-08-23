@@ -1,25 +1,18 @@
 package com.gestion.recettes.service.servicesImpl;
 
-import com.gestion.recettes.config.AuthenticationRequest;
-import com.gestion.recettes.config.AuthenticationResponse;
 import com.gestion.recettes.config.JwtService;
-import com.gestion.recettes.config.RegisterRequest;
 import com.gestion.recettes.dto.*;
 import com.gestion.recettes.entities.Personne;
-import com.gestion.recettes.entities.Profile;
 import com.gestion.recettes.entities.Recette;
 import com.gestion.recettes.entities.Role;
 import com.gestion.recettes.repos.PersonneRepo;
-import com.gestion.recettes.repos.ProfileRepo;
 import com.gestion.recettes.repos.RecetteRepo;
-import com.gestion.recettes.response.LoginResponse;
 import com.gestion.recettes.service.PersonneService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +40,7 @@ public class PersonneImpl implements PersonneService {
         //this.authenticationManager=authenticationManager;
     }
     
-    public AuthenticationResponse inscrire(RegisterRequest request) {
+    /*public AuthenticationResponse inscrire(RegisterRequest request) {
         var user = Personne.builder()
             .nomComplet(request.getNomComplet())
             .user_name(request.getUsername())
@@ -60,7 +53,7 @@ public class PersonneImpl implements PersonneService {
         return AuthenticationResponse.builder()
         	.token(jwtToken)
             .build();
-      }
+      }*/
     
     
     
@@ -110,7 +103,7 @@ public class PersonneImpl implements PersonneService {
     }
     
     
-    public AuthenticationResponse loginPersonne(AuthenticationRequest request) {
+    /*public AuthenticationResponse loginPersonne(AuthenticationRequest request) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
             		request.getEmail(),
@@ -123,7 +116,7 @@ public class PersonneImpl implements PersonneService {
         return AuthenticationResponse.builder()
         	.token(jwtToken)
             .build();
-      }
+      }*/
 
 //    @Override
 //    public LoginResponse loginPersonne(LoginDto loginDto, HttpSession session) {
@@ -180,7 +173,7 @@ public class PersonneImpl implements PersonneService {
         if (optionalPersonne.isPresent()) {
             Personne personne = optionalPersonne.get();
             personne.setNomComplet(personneDTO.getNomComplet());
-            personne.setUser_name(personneDTO.getUsername());
+            personne.setUser_name(personneDTO.getUser_name());
             personne.setDateCreation(LocalDate.now());
             personne.setAdresseMail(personneDTO.getAdresseMail());
             String encodedPassword = passwordEncoder.encode(personneDTO.getMotDePasse());
@@ -364,7 +357,7 @@ public class PersonneImpl implements PersonneService {
 
         personneDTO.setId(personne.getId());
         personneDTO.setNomComplet(personne.getNomComplet());
-        personneDTO.setUsername(personne.getUsername());
+        personneDTO.setUser_name(personne.getUsername());
         personneDTO.setDateCreation(personne.getDateCreation());
         personneDTO.setAdresseMail(personne.getAdresseMail());
         personneDTO.setMotDePasse(personne.getMotDePasse());
@@ -379,7 +372,7 @@ public class PersonneImpl implements PersonneService {
         Personne personne = new Personne();
         personne.setId(personneDTO.getId());
         personne.setNomComplet(personneDTO.getNomComplet());
-        personne.setUser_name(personneDTO.getUsername());
+        personne.setUser_name(personneDTO.getUser_name());
         personne.setDateCreation(LocalDate.now());
         personne.setAdresseMail(personneDTO.getAdresseMail());
         personne.setMotDePasse(personneDTO.getMotDePasse());

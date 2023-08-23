@@ -4,7 +4,6 @@ package com.gestion.recettes.config;
 
 import com.gestion.recettes.repos.PersonneRepo;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,27 +24,27 @@ public class ApplicationConfig {
 	private  PersonneRepo repository;
 	
 	@Bean
-	  public UserDetailsService userDetailsService() {
-	    return username -> repository.findByAdresseMail(username)
-	        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-	  }
+	public UserDetailsService userDetailsService() {
+		return username -> repository.findByAdresseMail(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	}
 	@Bean
-	  public AuthenticationProvider authenticationProvider() {
-	    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-	    authProvider.setUserDetailsService(userDetailsService());
-	    authProvider.setPasswordEncoder(passwordEncoder());
-	    return authProvider;
-	  }
-
-	  @Bean
-	  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-	    return config.getAuthenticationManager();
-	  }
-
-	  @Bean
-	  public PasswordEncoder passwordEncoder() {
-	    return new BCryptPasswordEncoder();
-	  }
-
-
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService());
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
+	}
+	
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	
 }

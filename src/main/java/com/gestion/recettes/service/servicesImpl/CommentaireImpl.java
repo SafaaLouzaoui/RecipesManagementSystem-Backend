@@ -157,7 +157,7 @@ public class CommentaireImpl implements CommentaireService {
                 CommentaireDto commentaireDto = convertToCommentaireDTO(commentaireOptional.get());
                 CommentairePersonneContactDto commentairePersonneContactDto = new CommentairePersonneContactDto();
                 commentairePersonneContactDto.setId(commentaireDto.getId());
-                commentairePersonneContactDto.setUsername(commentaireDto.getProprietaire().getUsername());
+                commentairePersonneContactDto.setUsername(commentaireDto.getProprietaire().getUser_name());
                 commentairePersonneContactDto.setEmail(commentaireDto.getProprietaire().getAddressMailContact());
                 if (commentaireDto.getCreatedAt() != null)
                     commentairePersonneContactDto.setCreatedAt(commentaireDto.getCreatedAt());
