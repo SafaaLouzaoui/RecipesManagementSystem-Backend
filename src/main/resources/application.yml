@@ -8,6 +8,10 @@ spring:
     password: ""
     main:
       allow-circular-references: true
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    allowed-headers: "*"
 
   jpa:
     hibernate:
