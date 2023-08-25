@@ -73,6 +73,7 @@ public class SecurityConfig {
                 .requestMatchers(DELETE,"/api/v1/motsCles/supprimer/**").hasAnyRole("ADMIN")
                 
                 
+                
                 .anyRequest()
                 .authenticated()
                 .and()

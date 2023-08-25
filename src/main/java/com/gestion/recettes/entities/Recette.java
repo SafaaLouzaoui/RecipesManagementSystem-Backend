@@ -85,12 +85,6 @@ public class Recette {
     @ManyToOne
     private TypeRelation typeRel;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "recette_recettes",
-            joinColumns = @JoinColumn(name = "recette_id"),
-            inverseJoinColumns = @JoinColumn(name = "recettes_id"))
-    private List<Recette> recettes = new ArrayList<>();
-
     @OneToMany(mappedBy = "recette", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<Quantite> quantites = new ArrayList<>();
     @OneToMany(mappedBy = "recette", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)

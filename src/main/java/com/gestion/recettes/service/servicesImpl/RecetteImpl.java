@@ -74,15 +74,7 @@ public class RecetteImpl implements RecetteService {
         List<MotCle> motCles = convertToMotCleList(recetteDto.getMotCles());
         List<Etape> etapes = convertToEtapeList(recetteDto.getEtapes());
         List<Quantite> quantites = convertToQuantiteList(recetteDto.getQuantites());
-
-        List<Recette> recettesRef = new ArrayList<>();
-        for (RecetteRefDto recetteRefDto : recetteDto.getRecettesRef()){
-            Optional<Recette> optionalRecette = recetteRepo.findById(recetteRefDto.getId());
-            if(optionalRecette.isPresent()) {
-                Recette recetteAdd = optionalRecette.get();
-                recettesRef.add(recetteAdd);
-            }
-        }
+        
 
         //***ingredientList is the list that will added to the created recette
         List<Ingredient> ingredientList = new ArrayList<>();
@@ -155,7 +147,6 @@ public class RecetteImpl implements RecetteService {
         recette.setEtapes(etapeList);
         recette.setMotCles(motCleList);
         recette.setMedias(mediaList);
-        recette.setRecettes(recettesRef);
 
         Long userId = (Long) session.getAttribute("userId");
         //Long userId = recetteDto.getUtilisateurCreateur().getId();
@@ -317,18 +308,7 @@ public class RecetteImpl implements RecetteService {
             /*if(recetteDto.getRecettes() != null) {
                 recette.setRecettes(RecetteImpl.convertToRecetteList(recetteDto.getRecettes()));
             }*/
-
-            List<Recette> recettesRef = new ArrayList<>();
-            if (recetteDto.getRecettesRef() != null){
-                for (RecetteRefDto recetteRefDto : recetteDto.getRecettesRef()){
-                    Optional<Recette> optionalRecette1 = recetteRepo.findById(recetteRefDto.getId());
-                    if(optionalRecette.isPresent()) {
-                        Recette recetteAdd = optionalRecette.get();
-                        recettesRef.add(recetteAdd);
-                    }
-                }
-                recette.setRecettes(recettesRef);
-            }
+            
             
 
             Recette updatedRecette = recetteRepo.save(recette);
@@ -469,25 +449,6 @@ public class RecetteImpl implements RecetteService {
         if (recette.getCommentaires() != null) {
             recetteDto.setCommentaires(CommentaireImpl.convertToCommentaireDtoList(recette.getCommentaires()));
         }
-        if (recette.getRecettes() != null) {
-            List<RecetteRefDto> recetteRefDtos = new ArrayList<>();
-            for (Recette recette1 : recette.getRecettes()) {
-                RecetteRefDto recetteRefDto = new RecetteRefDto();
-                recetteRefDto.setId(recette1.getId());
-                recetteRefDto.setNom(recette1.getNom());
-                recetteRefDto.setDescription(recette1.getDescription());
-                recetteRefDto.setStatut(recette1.getStatut());
-                recetteRefDto.setOrigine(recette1.getOrigine());
-                recetteRefDto.setDatePublication(recette1.getDatePublication());
-                recetteRefDto.setDateSoumission(recette1.getDateSoumission());
-                recetteRefDto.setDureeCuisson(recette1.getDureeCuisson());
-                recetteRefDto.setDureePreparation(recette1.getDureePreparation());
-                recetteRefDto.setNbrPersonnes(recette1.getNbrPersonnes());
-                recetteRefDto.setVisibilitee(recette1.getVisibilitee());
-                recetteRefDtos.add(recetteRefDto);
-            }
-            recetteDto.setRecettesRef(recetteRefDtos);
-        }
 
         if(recette.getQuantites() != null) {
             recetteDto.setQuantites(QuantiteImpl.convertToQuantiteDtoList(recette.getQuantites()));
@@ -546,17 +507,6 @@ public class RecetteImpl implements RecetteService {
         }*/
         if (recetteDto.getCommentaires() != null) {
             recette.setCommentaires(CommentaireImpl.convertToCommentaireList(recetteDto.getCommentaires()));
-        }
-        if (recetteDto.getRecettesRef() != null){
-            List<Recette> recettesRef = new ArrayList<>();
-            for (RecetteRefDto recetteRefDto : recetteDto.getRecettesRef()){
-                Optional<Recette> optionalRecette2 = recetteRepoStat.findById(recetteRefDto.getId());
-                if(optionalRecette2.isPresent()) {
-                    Recette recetteAdd = optionalRecette2.get();
-                    recettesRef.add(recetteAdd);
-                }
-            }
-            recette.setRecettes(recettesRef);
         }
         if(recetteDto.getQuantites() != null) {
             recette.setQuantites(convertToQuantiteList(recetteDto.getQuantites()));

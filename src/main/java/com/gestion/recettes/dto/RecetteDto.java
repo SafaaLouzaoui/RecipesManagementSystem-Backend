@@ -35,7 +35,6 @@ public class RecetteDto {
     private List<CategorieDto> categories = new ArrayList<>();
     private TypeRelationDto typeRelation;
     private TypeRelationDto typeRel;
-    private List<RecetteRefDto> recettesRef  = new ArrayList<>();
     private List<QuantiteDto> quantites = new ArrayList<>();
     private List<CommentaireDto> commentaires = new ArrayList<>();
 }
