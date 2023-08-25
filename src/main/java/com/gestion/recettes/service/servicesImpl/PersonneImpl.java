@@ -23,6 +23,7 @@ import java.util.*;
 @Service
 public class PersonneImpl implements PersonneService {
     private final PersonneRepo personneRepo;
+    private static PersonneRepo personneRepoStat;
     private final RecetteRepo recetteRepo;
     private final PasswordEncoder passwordEncoder;
     private JdbcTemplate jdbcTemplate;
@@ -36,57 +37,10 @@ public class PersonneImpl implements PersonneService {
         this.recetteRepo = recetteRepo;
         this.passwordEncoder = passwordEncoder;
         this.jdbcTemplate = jdbcTemplate;
+        personneRepoStat = personneRepo;
         //this.jwtService=jwtService;
         //this.authenticationManager=authenticationManager;
     }
-    
-    /*public AuthenticationResponse inscrire(RegisterRequest request) {
-        var user = Personne.builder()
-            .nomComplet(request.getNomComplet())
-            .user_name(request.getUsername())
-            .adresseMail(request.getAdresseMail())
-            .motDePasse(passwordEncoder.encode(request.getMotDePasse()))
-            .image(request.getImage())
-            .build();
-        var savedUser = personneRepo.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-        	.token(jwtToken)
-            .build();
-      }*/
-    
-    
-    
-
-
-//    public PersonneDto inscrire(PersonneDto personneDTO) {
-//
-//        int codeProfilUtilisateur = 1;
-//        Optional<Profile> existingProfile = profileRepo.findByCode(codeProfilUtilisateur);
-//
-//        Profile profile = existingProfile.orElseGet(() -> {
-//
-//            Profile newProfile = new Profile();
-//            newProfile.setCode(codeProfilUtilisateur);
-//            newProfile.setDescription("utilisateur");
-//            return profileRepo.save(newProfile);
-//        });
-//
-//
-//        Personne personne = convertToPersonne(personneDTO);
-//        personne.setProfile(profile);
-//        personne.setStatut("active");
-//
-//        if (personne.getMotDePasse() != null){
-//            String encodedPassword = passwordEncoder.encode(personne.getMotDePasse());
-//            personne.setMotDePasse(encodedPassword);
-//        }
-//
-//
-//        personneRepo.save(personne);
-//
-//        return convertToPersonneDTO(personne);
-//    }
 
 
     @Override
@@ -101,64 +55,6 @@ public class PersonneImpl implements PersonneService {
             return null;
         }
     }
-    
-    
-    /*public AuthenticationResponse loginPersonne(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-            		request.getEmail(),
-            		request.getPassword()
-            )
-        );
-        var user = personneRepo.findByAdresseMail(request.getEmail())
-            .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-        	.token(jwtToken)
-            .build();
-      }*/
-
-//    @Override
-//    public LoginResponse loginPersonne(LoginDto loginDto, HttpSession session) {
-//        Personne personne1 = personneRepo.findByAdresseMailAndStatutNot(loginDto.getAdresseMail(), "visitor");
-//        if (personne1 != null) {
-//            String password = loginDto.getMotDePasse();
-//            String encodedPassword = personne1.getMotDePasse();
-//            String statut = personne1.getStatut();
-//            Boolean isPwdRight = passwordEncoder.matches(password, encodedPassword);
-//            if (isPwdRight) {
-//                Optional<Personne> employee = personneRepo.findByAdresseMailAndMotDePasse(loginDto.getAdresseMail(), encodedPassword);
-//                if (employee.isPresent()) {
-//                    if ((!statut.equals("blocked")) || (!statut.equals("deleted"))) {
-//                        Personne personne = employee.get();
-//                        String role = personne.getProfile().getDescription();
-//                        Long id = personne.getId();
-//
-//                        if (role.equals("moderateur")) {
-//                            session.setAttribute("userId", id);
-//                            return new LoginResponse(id,"Login Success (Moderator)", true);
-//                        } else if (role.equals("utilisateur")) {
-//                            session.setAttribute("userId", id);
-//                            return new LoginResponse(id,"Login Success (User)", true);
-//                        } else if (role.equals("administrateur")) {
-//                            session.setAttribute("userId", id);
-//                            return new LoginResponse(id,"Login Success (Administrator)", true);
-//                        } else {
-//                            return new LoginResponse(null,"Unknown Role", false);
-//                        }
-//                    } else {
-//                        return new LoginResponse(null,"This account has been blocked or deleted", false);
-//                    }
-//                } else {
-//                    return new LoginResponse(null,"Login Failed", false);
-//                }
-//            } else {
-//                return new LoginResponse(null,"password Not Match", false);
-//            }
-//        } else {
-//            return new LoginResponse(null,"Email not exists", false);
-//        }
-//    }
 
 
     @Override
@@ -337,8 +233,6 @@ public class PersonneImpl implements PersonneService {
         }
     }
 
-    
-
     @Override
     public List<PersonneDto> mesFollowers(Long id) {
         String sql = "SELECT abonnees_id FROM personne_abonnee WHERE personne_id = ?";
@@ -377,7 +271,6 @@ public class PersonneImpl implements PersonneService {
         personne.setAdresseMail(personneDTO.getAdresseMail());
         personne.setMotDePasse(personneDTO.getMotDePasse());
         personne.setStatut(personneDTO.getStatut());
-
         if (personneDTO.getRole() != null) {
             personne.setRole(personneDTO.getRole());
         }

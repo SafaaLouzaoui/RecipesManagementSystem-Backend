@@ -36,13 +36,12 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(
-                        "/api/v1/auth/**"
+                        "/api/v1/auth/**",
+                        "/api/v1/recettes/lireTous",
+                        "/api/v1/utilisateurs/**"
                 )
                 .permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll()
-                .requestMatchers(GET, "/api/v1/recettes/lireTous")
-                .permitAll()
+                .requestMatchers(GET,"/api/v1/categories/lireTous").hasAnyRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
