@@ -260,35 +260,42 @@ public class RecetteImpl implements RecetteService {
             recette.setBesoins(besoins);*/
             
             recette.setMotCles(convertToMotCleList(recetteDto.getMotCles()));
-            
+    
             List<Ingredient> ingredientList = new ArrayList<>();
-            for (IngredientDto ingredientDto : recetteDto.getIngredients()){
-                if (ingredientDto.getId() != null){
-                    ingredientList.add(IngredientImpl.convertToIngredient(ingredientImpl.modifier(ingredientDto.getId(), ingredientDto)));
-                }
-                else {
-                    IngredientDto newIngredientDto = ingredientImpl.creer(ingredientDto);
-                    ingredientList.add(IngredientImpl.convertToIngredient(newIngredientDto));
-                }
-            }
-            recette.setIngredients(ingredientList);
-            
-            int i = 0;
             List<Quantite> quantitesList = new ArrayList<>();
-            for (QuantiteDto quantiteDto : recetteDto.getQuantites()){
-                Quantite quantite = convertToQuantite(quantiteDto);
-                if (quantiteDto.getId() != null) {
-                    quantite.setIngredient(recette.getIngredients().get(i));
-                    quantitesList.add(convertToQuantite(quantiteImpl.modifier(quantite.getId(), convertToQuantiteDto(quantite))));
+    
+            int index = 0;
+    
+            for (IngredientDto ingredientDto : recetteDto.getIngredients()) {
+                Ingredient ingredient;
+        
+                if (ingredientDto.getId() != null) {
+                    ingredient = convertToIngredient(ingredientImpl.modifier(ingredientDto.getId(), ingredientDto));
+                } else {
+                    IngredientDto newIngredientDto = ingredientImpl.creer(ingredientDto);
+                    ingredient = IngredientImpl.convertToIngredient(newIngredientDto);
                 }
-                else {
-                    quantite.setIngredient(recette.getIngredients().get(i));
+        
+                ingredientList.add(ingredient);
+        
+                QuantiteDto quantiteDto = recetteDto.getQuantites().get(index);
+                Quantite quantite = convertToQuantite(quantiteDto);
+        
+                if (quantiteDto.getId() != null) {
+                    quantite.setIngredient(ingredient);
+                    quantitesList.add(convertToQuantite(quantiteImpl.modifier(quantite.getId(), convertToQuantiteDto(quantite))));
+                } else {
+                    quantite.setIngredient(ingredient);
                     quantitesList.add(convertToQuantite(quantiteImpl.creer(convertToQuantiteDto(quantite))));
                 }
-                i++;
+        
+                index++;
             }
+    
+            recette.setIngredients(ingredientList);
             recette.setQuantites(quantitesList);
-            
+    
+    
             List<Etape> etapes = new ArrayList<>();
             for (EtapeDto etapeDTO : recetteDto.getEtapes()){
                 if (etapeDTO.getId() != null)

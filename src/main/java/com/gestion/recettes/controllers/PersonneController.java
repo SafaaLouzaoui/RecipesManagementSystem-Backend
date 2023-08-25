@@ -32,15 +32,13 @@ public class PersonneController {
     @GetMapping(path="/lireTous")
     public List<PersonneDto> getAllUsers()
     {
-        List<PersonneDto> allUsers = personneService.lireTous();
-        return allUsers;
+        return personneService.lireTous();
     }
 
-    @PutMapping(path = "/modifier/{id}")
+    @PutMapping(path = {"/modifier/{id}", "/mien/modifier/{id}"})
     public PersonneDto modifier(@PathVariable("id")Long id, @RequestBody PersonneDto personneDTO)
     {
         return personneService.modifier(id, personneDTO);
-
     }
     @PostMapping("/bloquer/{id}")
     public ResponseEntity<String> bloquerCompte(@PathVariable("id") Long id) {
@@ -63,7 +61,7 @@ public class PersonneController {
                     .body("Ce compte est déja activé.");
         }
     }
-    @DeleteMapping(path = "/supprimer/{id}")
+    @DeleteMapping(path = {"/supprimer/{id}", "/mien/supprimer/{id}"})
     public Boolean deleteUser(@PathVariable (value="id") Long id)
     {
         Boolean deletedUser = personneService.supprimer(id);

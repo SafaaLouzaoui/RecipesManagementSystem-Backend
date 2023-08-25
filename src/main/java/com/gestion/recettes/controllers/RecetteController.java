@@ -51,20 +51,20 @@ public class RecetteController {
         return recetteService.lireTous();
     }
 
-    @PutMapping(path = "/modifier/{id}")
+    @PutMapping(path = {"/modifier/{id}", "/mien/modifier/{id}"})
     public RecetteDto modifier(@PathVariable (value = "id") Long id,@RequestBody RecetteDto recetteDto)
     {
         return recetteService.modifier(id, recetteDto);
     }
-
-    @DeleteMapping(path = "/supprimer/{id}")
-    public Boolean supprimer(@PathVariable (value = "id") Long id)
-    {
+    
+    @DeleteMapping(path = { "/mien/supprimer/{id}", "/supprimer/{id}" })
+    public Boolean supprimer(@PathVariable(value = "id") Long id) {
         Boolean recetteSupprimee = recetteService.supprimer(id);
         return recetteSupprimee;
     }
-
-    @GetMapping("/recettes/search")
+    
+    
+    @GetMapping("/search")
     public List<RecetteDto> searchRecettesByNom(@RequestParam("nom") String nom) {
         return recetteService.searchRecettesByNom(nom);
     }
