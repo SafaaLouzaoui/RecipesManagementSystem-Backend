@@ -55,7 +55,7 @@ public class SecurityConfig {
         
                 .requestMatchers(PUT, "/api/v1/recettes/modifier/**").hasAnyRole("ADMIN")
                 .requestMatchers(DELETE, "/api/v1/recettes/supprimer/**").hasAnyRole("ADMIN")
-                
+        
                 .requestMatchers(POST,"/api/v1/categories/creer").hasAnyRole("ADMIN")
                 .requestMatchers(PUT,"/api/v1/categories/modifier/**").hasAnyRole("ADMIN")
                 .requestMatchers(DELETE,"/api/v1/categories/supprimer/**").hasAnyRole("ADMIN")

@@ -2,9 +2,11 @@ package com.gestion.recettes.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gestion.recettes.config.JwtService;
+import com.gestion.recettes.dto.PersonneDto;
 import com.gestion.recettes.entities.Personne;
 import com.gestion.recettes.entities.Role;
 import com.gestion.recettes.repos.PersonneRepo;
+import com.gestion.recettes.service.servicesImpl.PersonneImpl;
 import com.gestion.recettes.token.Token;
 import com.gestion.recettes.token.TokenRepo;
 import com.gestion.recettes.token.TokenType;
@@ -16,6 +18,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.IOException;
 
@@ -43,6 +48,7 @@ public class AuthenticationService {
     return AuthenticationResponse.builder()
         .accessToken(jwtToken)
             .refreshToken(refreshToken)
+            .id(user.getId())
         .build();
   }
 
@@ -62,6 +68,7 @@ public class AuthenticationService {
     return AuthenticationResponse.builder()
         .accessToken(jwtToken)
             .refreshToken(refreshToken)
+            .id(user.getId())
         .build();
   }
 

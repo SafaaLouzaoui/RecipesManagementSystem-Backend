@@ -1,6 +1,7 @@
 package com.gestion.recettes.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gestion.recettes.dto.PersonneDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,5 @@ public class AuthenticationResponse {
   private String accessToken;
   @JsonProperty("refresh_token")
   private String refreshToken;
+  private Long id;
 }
