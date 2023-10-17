@@ -48,14 +48,16 @@ public class SecurityConfig {
                         "/api/v1/motsCles/lireTous",
                         "/api/v1/motsCles/lire/**",
                         "/api/v1/medias/lireTous",
-                        "/api/v1/medias/lire/**"
-        
+                        "/api/v1/medias/lire/**"        
                         )
                 .permitAll()
         
                 .requestMatchers(PUT, "/api/v1/recettes/modifier/**").hasAnyRole("ADMIN")
                 .requestMatchers(DELETE, "/api/v1/recettes/supprimer/**").hasAnyRole("ADMIN")
         
+                .requestMatchers(POST, "/api/v1/recettes/creer").hasAnyRole("USER")
+                .requestMatchers(PUT, "/api/v1/recettes/mien/modifier/**").hasAnyRole("USER")
+                .requestMatchers(DELETE, "/api/v1/recettes/mien/supprimer/**").hasAnyRole("USER")
                 .requestMatchers(POST,"/api/v1/categories/creer").hasAnyRole("ADMIN")
                 .requestMatchers(PUT,"/api/v1/categories/modifier/**").hasAnyRole("ADMIN")
                 .requestMatchers(DELETE,"/api/v1/categories/supprimer/**").hasAnyRole("ADMIN")
@@ -64,8 +66,8 @@ public class SecurityConfig {
                 .requestMatchers(PUT,"/api/v1/ingredients/modifier/**").hasAnyRole("ADMIN")
                 .requestMatchers(DELETE,"/api/v1/ingredients/supprimer/**").hasAnyRole("ADMIN")
         
-                .requestMatchers(GET,"/api/v1/utilisateurs/lireTous").hasAnyRole("ADMIN")
-                .requestMatchers(PUT,"/api/v1/utilisateurs/modifier/**").hasAnyRole("ADMIN")
+                
+                .requestMatchers(PUT,"/api/v1/utilisateurs/modifier/**").hasAnyRole("ADMIN","USER")
                 .requestMatchers(DELETE,"/api/v1/utilisateurs/supprimer/**").hasAnyRole("ADMIN")
         
                 .requestMatchers(POST,"/api/v1/motsCles/creer").hasAnyRole("ADMIN")

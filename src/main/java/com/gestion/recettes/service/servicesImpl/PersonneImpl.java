@@ -72,6 +72,8 @@ public class PersonneImpl implements PersonneService {
             personne.setUser_name(personneDTO.getUser_name());
             personne.setDateCreation(LocalDate.now());
             personne.setAdresseMail(personneDTO.getAdresseMail());
+            personne.setImage(personneDTO.getImage());
+
             if (personneDTO.getMotDePasse() != null){
                 String encodedPassword = passwordEncoder.encode(personneDTO.getMotDePasse());
                 personne.setMotDePasse(encodedPassword);
@@ -258,6 +260,7 @@ public class PersonneImpl implements PersonneService {
         personneDTO.setAdresseMail(personne.getAdresseMail());
         personneDTO.setMotDePasse(personne.getMotDePasse());
         personneDTO.setStatut(personne.getStatut());
+        personneDTO.setImage(personne.getImage());
         if (personne.getRole() != null) {
             personneDTO.setRole(personne.getRole());
         }
